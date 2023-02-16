@@ -69,7 +69,7 @@ func main() {
 		os.Setenv("GITHUB_WORKFLOW", "Link to action run")
 	}
 
-	long_sha := os.Getenv("GITHUB_SHA")
+	long_sha := os.Getenv("CI_COMMIT_SHA")
 	commit_sha := long_sha[0:6]
 
 	minimal := os.Getenv(EnvMinimal)
@@ -98,7 +98,7 @@ func main() {
 				field := []Field{
 					{
 						Title: "Ref",
-						Value: os.Getenv("GITHUB_REF"),
+						Value: os.Getenv("CI_COMMIT_REF_NAME"),
 						Short: true,
 					},
 				}
@@ -107,7 +107,7 @@ func main() {
 				field := []Field{
 					{
 						Title: "Event",
-						Value: os.Getenv("GITHUB_EVENT_NAME"),
+						Value: os.Getenv("CI_PIPELINE_SOURCE"),
 						Short: true,
 					},
 				}
@@ -116,7 +116,7 @@ func main() {
 				field := []Field{
 					{
 						Title: "Actions URL",
-						Value: "<" + os.Getenv("GITHUB_SERVER_URL") + "/" + os.Getenv("GITHUB_REPOSITORY") + "/commit/" + os.Getenv("GITHUB_SHA") + "/checks|" + os.Getenv("GITHUB_WORKFLOW") + ">",
+						Value: "<" + os.Getenv("CI_SERVER_HOST") + "/" + os.Getenv("CI_PROJECT_NAME") + "/commit/" + os.Getenv("CI_COMMIT_SHA") + "/checks|" + os.Getenv("GITHUB_WORKFLOW") + ">",
 						Short: true,
 					},
 				}
@@ -125,7 +125,7 @@ func main() {
 				field := []Field{
 					{
 						Title: "Commit",
-						Value: "<" + os.Getenv("GITHUB_SERVER_URL") + "/" + os.Getenv("GITHUB_REPOSITORY") + "/commit/" + os.Getenv("GITHUB_SHA") + "|" + commit_sha + ">",
+						Value: "<" + os.Getenv("CI_SERVER_HOST") + "/" + os.Getenv("CI_PROJECT_NAME") + "/commit/" + os.Getenv("CI_COMMIT_SHA") + "|" + commit_sha + ">",
 						Short: true,
 					},
 				}
@@ -137,21 +137,21 @@ func main() {
 		mainFields := []Field{
 			{
 				Title: "Ref",
-				Value: os.Getenv("GITHUB_REF"),
+				Value: os.Getenv("CI_COMMIT_REF_NAME"),
 				Short: true,
 			}, {
 				Title: "Event",
-				Value: os.Getenv("GITHUB_EVENT_NAME"),
+				Value: os.Getenv("CI_PIPELINE_SOURCE"),
 				Short: true,
 			},
 			{
 				Title: "Actions URL",
-				Value: "<" + os.Getenv("GITHUB_SERVER_URL") + "/" + os.Getenv("GITHUB_REPOSITORY") + "/commit/" + os.Getenv("GITHUB_SHA") + "/checks|" + os.Getenv("GITHUB_WORKFLOW") + ">",
+				Value: "<" + os.Getenv("CI_SERVER_HOST") + "/" + os.Getenv("CI_PROJECT_NAME") + "/commit/" + os.Getenv("CI_COMMIT_SHA") + "/checks|" + os.Getenv("CI_JOB_NAME") + ">",
 				Short: true,
 			},
 			{
 				Title: "Commit",
-				Value: "<" + os.Getenv("GITHUB_SERVER_URL") + "/" + os.Getenv("GITHUB_REPOSITORY") + "/commit/" + os.Getenv("GITHUB_SHA") + "|" + commit_sha + ">",
+				Value: "<" + os.Getenv("CI_SERVER_HOST") + "/" + os.Getenv("CI_PROJECT_NAME") + "/commit/" + os.Getenv("CI_COMMIT_SHA") + "|" + commit_sha + ">",
 				Short: true,
 			},
 			{
@@ -200,11 +200,11 @@ func main() {
 		LinkNames: os.Getenv(EnvSlackLinkNames),
 		Attachments: []Attachment{
 			{
-				Fallback:   envOr(EnvSlackMessage, "GITHUB_ACTION="+os.Getenv("GITHUB_ACTION")+" \n GITHUB_ACTOR="+os.Getenv("GITHUB_ACTOR")+" \n GITHUB_EVENT_NAME="+os.Getenv("GITHUB_EVENT_NAME")+" \n GITHUB_REF="+os.Getenv("GITHUB_REF")+" \n GITHUB_REPOSITORY="+os.Getenv("GITHUB_REPOSITORY")+" \n GITHUB_WORKFLOW="+os.Getenv("GITHUB_WORKFLOW")),
+				Fallback:   envOr(EnvSlackMessage, "GITHUB_ACTION="+os.Getenv("GITHUB_ACTION")+" \n GITHUB_ACTOR="+os.Getenv("GITLAB_USER_NAME")+" \n GITHUB_EVENT_NAME="+os.Getenv("CI_PIPELINE_SOURCE")+" \n GITHUB_REF="+os.Getenv("GITHUB_REF")+" \n GITHUB_REPOSITORY="+os.Getenv("CI_PROJECT_NAME")+" \n GITHUB_WORKFLOW="+os.Getenv("CI_JOB_NAME")),
 				Color:      color,
 				AuthorName: envOr(EnvGithubActor, ""),
-				AuthorLink: os.Getenv("GITHUB_SERVER_URL") + "/" + os.Getenv(EnvGithubActor),
-				AuthorIcon: os.Getenv("GITHUB_SERVER_URL") + "/" + os.Getenv(EnvGithubActor) + ".png?size=32",
+				AuthorLink: os.Getenv("CI_SERVER_HOST") + "/" + os.Getenv(EnvGithubActor),
+				AuthorIcon: os.Getenv("CI_SERVER_HOST") + "/" + os.Getenv(EnvGithubActor) + ".png?size=32",
 				Footer:     envOr(EnvSlackFooter, "<https://github.com/rtCamp/github-actions-library|Powered By rtCamp's GitHub Actions Library>"),
 				Fields:     fields,
 			},
